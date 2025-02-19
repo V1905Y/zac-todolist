@@ -9,7 +9,7 @@ def load_tasks():
         with open(TASKS_FILE, "r") as file:
             return json.load(file)  # TODO: Handle JSON errors properly!
     except FileNotFoundError:
-        return None  # HINT: What should we return instead of None?
+        return []  # HINT: What should we return instead of None?
     except json.JSONDecodeError:
         return []  # HINT: If JSON is empty or corrupted, return an empty list
 
@@ -60,3 +60,35 @@ def delete_task(index):
 
 # BONUS TODO: Add a feature to clear only completed tasks
 # HINT: Use a list comprehension to filter out completed tasks
+# Initialize session state for tasks
+if "tasks" not in st.session_state:
+    st.session_state["tasks"] = load_tasks()
+
+st.title("📝 Simple To-Do List")
+
+# Input field for adding new tasks
+new_task = st.text_input("Enter a new task", "")
+
+if st.button("Add Task"):
+    add_task(new_task)  # This function needs to be completed properly
+
+# Display tasks
+st.subheader("Your Tasks:")
+
+if st.session_state["tasks"]:
+    for i, task in enumerate(st.session_state["tasks"]):
+        col1, col2 = st.columns([0.85, 0.15])
+
+        # Checkbox to mark task as completed
+        completed = col1.checkbox(task["task"], value=task["completed"], key=f"task_{i}")
+        if completed != task["completed"]:
+            toggle_task(i)  # Function needs fixing!
+
+        # Delete button
+        if col2.button("❌", key=f"delete_{i}"):
+            delete_task(i)  # Function needs fixing!
+
+else:
+    st.write("No tasks added yet. Add a task above!")
+
+# TODO: Add a feature to clear only completed tasks
